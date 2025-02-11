@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient; // line to include MySQL support
-using BCrypt.Net; //  line to include BCrypt support
+using MySql.Data.MySqlClient;
+using BCrypt.Net;
 
 namespace JFT
 {
@@ -19,7 +19,7 @@ namespace JFT
         public Form2()
         {
             InitializeComponent();
-            this.textBox2.PasswordChar = '*'; 
+            this.textBox2.PasswordChar = '*';
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -40,31 +40,37 @@ namespace JFT
                 {
                     conn.Open();
 
-                    // Check if the username exists and retrieve the hashed password
-                    string query = "SELECT password FROM accs WHERE username = @username";
+                    // Check if the username exists and retrieve the hashed password and salt
+                    string query = "SELECT password, salt FROM accs WHERE username = @username";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
-                        string storedHashedPassword = cmd.ExecuteScalar()?.ToString();
-
-                        if (storedHashedPassword == null)
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            MessageBox.Show("Invalid username or password.");
-                            return;
-                        }
+                            if (reader.Read())
+                            {
+                                string storedHashedPassword = reader["password"].ToString();
+                                string storedSalt = reader["salt"].ToString();
+                                string saltedEnteredPassword = password + storedSalt;
 
-                        // Verify the entered password against the stored hashed password
-                        bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, storedHashedPassword);
+                                // Verify the entered password against the stored hashed password
+                                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(saltedEnteredPassword, storedHashedPassword);
 
-                        if (isPasswordValid)
-                        {
-                            MessageBox.Show("Login Successful!");
-                            this.Close(); // Close the login form
-                            // Optionally, open the main application form here
-                        }
-                        else
-                        {
-                            MessageBox.Show("Invalid username or password.");
+                                if (isPasswordValid)
+                                {
+                                    MessageBox.Show("Login Successful!");
+                                    this.Close(); // Close the login form
+                                    // Optionally, open the main application form here
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Invalid username or password.");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid username or password.");
+                            }
                         }
                     }
                 }
