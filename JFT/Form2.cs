@@ -59,8 +59,12 @@ namespace JFT
                                 if (isPasswordValid)
                                 {
                                     MessageBox.Show("Login Successful!");
-                                    this.Close(); // Close the login form
-                                    // Optionally, open the main application form here
+
+                                    
+                                    MainMenu mainMenu = new MainMenu();
+                                    mainMenu.ShowDialog();
+                                    this.Hide();
+                                    // MAIN APP HERE
                                 }
                                 else
                                 {

@@ -21,8 +21,18 @@ namespace JFT
         public Form3()
         {
             InitializeComponent();
-            this.textBox2.PasswordChar = '*';
+            this.textBox2.PasswordChar = '*'; //Password textvox
             this.textBox3.PasswordChar = '*'; // Confirm password textbox
+            this.textBox4.PasswordChar = '*'; //Answer of sec. question
+
+            // Populate the ComboBox with security questions
+            comboBox1.Items.Add("What is your mother's maiden name?");
+            comboBox1.Items.Add("What was your first pet's name?");
+            comboBox1.Items.Add("What is the name of your favorite teacher?");
+            comboBox1.Items.Add("What was the name of your first school?");
+            comboBox1.Items.Add("What is your favorite book?");
+
+            comboBox1.SelectedIndex = 0; // Set default selected item
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -30,10 +40,12 @@ namespace JFT
             string username = textBox1.Text;
             string password = textBox2.Text;
             string confirmPassword = textBox3.Text; // Confirm password input
+            string securityQuestion = comboBox1.SelectedItem?.ToString(); // Get selected security question
+            string securityAnswer = textBox4.Text; // Get security answer input
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(securityQuestion) || string.IsNullOrEmpty(securityAnswer))
             {
-                MessageBox.Show("Please enter username, password, and confirm password.");
+                MessageBox.Show("Please fill in all fields, including security question and answer.");
                 return;
             }
 
@@ -43,7 +55,6 @@ namespace JFT
                 return;
             }
 
-            // Regex to check if the password meets the requirements
             string passwordPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{14,}$";
             if (!Regex.IsMatch(password, passwordPattern))
             {
@@ -51,12 +62,10 @@ namespace JFT
                 return;
             }
 
-            
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
             string saltedPassword = password + salt;
-
-            
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(saltedPassword);
+            string hashedSecurityAnswer = BCrypt.Net.BCrypt.HashPassword(securityAnswer);
 
             try
             {
@@ -77,12 +86,14 @@ namespace JFT
                         }
                     }
 
-                    string query = "INSERT INTO accs (username, password, salt) VALUES (@username, @password, @salt)";
+                    string query = "INSERT INTO accs (username, password, salt, security_question, security_answer) VALUES (@username, @password, @salt, @securityQuestion, @securityAnswer)";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@password", hashedPassword);
                         cmd.Parameters.AddWithValue("@salt", salt);
+                        cmd.Parameters.AddWithValue("@securityQuestion", securityQuestion);
+                        cmd.Parameters.AddWithValue("@securityAnswer", hashedSecurityAnswer);
 
                         int result = cmd.ExecuteNonQuery();
 
@@ -90,6 +101,7 @@ namespace JFT
                         {
                             MessageBox.Show("Signup Successful!");
                             this.Close();
+                            
                         }
                         else
                         {
