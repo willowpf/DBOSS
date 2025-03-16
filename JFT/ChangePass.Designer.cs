@@ -35,14 +35,13 @@
             this.textBoxConfirmPassword = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxSecurityAnswer = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxOTP = new System.Windows.Forms.TextBox();
             this.btnSendOTP = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.btnVerifySecurityQuestion = new System.Windows.Forms.Button();
+            this.btnResetPassword = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -72,6 +71,7 @@
             this.labelSecurityQuestion.TabIndex = 2;
             this.labelSecurityQuestion.Text = "Security Question";
             this.labelSecurityQuestion.EnabledChanged += new System.EventHandler(this.btnVerifySecurityQuestion_Click);
+            this.labelSecurityQuestion.Click += new System.EventHandler(this.btnVerifySecurityQuestion_Click);
             // 
             // textBoxNewPassword
             // 
@@ -103,16 +103,6 @@
             this.textBoxSecurityAnswer.Size = new System.Drawing.Size(160, 22);
             this.textBoxSecurityAnswer.TabIndex = 6;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(275, 337);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 91);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Change Password";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnResetPassword_Click);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -138,14 +128,6 @@
             this.btnSendOTP.Text = "Verify OTP";
             this.btnSendOTP.UseVisualStyleBackColor = true;
             this.btnSendOTP.Click += new System.EventHandler(this.btnVerifyOTP_Click);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(291, 129);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(160, 24);
-            this.comboBox1.TabIndex = 12;
             // 
             // label3
             // 
@@ -173,19 +155,28 @@
             this.btnVerifySecurityQuestion.UseVisualStyleBackColor = true;
             this.btnVerifySecurityQuestion.Click += new System.EventHandler(this.btnVerifySecurityQuestion_Click);
             // 
+            // btnResetPassword
+            // 
+            this.btnResetPassword.Location = new System.Drawing.Point(312, 357);
+            this.btnResetPassword.Name = "btnResetPassword";
+            this.btnResetPassword.Size = new System.Drawing.Size(139, 62);
+            this.btnResetPassword.TabIndex = 16;
+            this.btnResetPassword.Text = "Reset Password";
+            this.btnResetPassword.UseVisualStyleBackColor = true;
+            this.btnResetPassword.Click += new System.EventHandler(this.btnResetPassword_Click);
+            // 
             // ChangePass
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnResetPassword);
             this.Controls.Add(this.btnVerifySecurityQuestion);
             this.Controls.Add(this.textBoxUsername);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.btnSendOTP);
             this.Controls.Add(this.textBoxOTP);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBoxSecurityAnswer);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBoxConfirmPassword);
@@ -209,13 +200,12 @@
         private System.Windows.Forms.TextBox textBoxConfirmPassword;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxSecurityAnswer;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxOTP;
         private System.Windows.Forms.Button btnSendOTP;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxUsername;
         private System.Windows.Forms.Button btnVerifySecurityQuestion;
+        private System.Windows.Forms.Button btnResetPassword;
     }
 }

@@ -26,10 +26,7 @@ namespace JFT
             this.textBox4.PasswordChar = '*'; //Answer of sec. question
 
             // Populate the ComboBox with security questions
-            comboBox1.Items.Add("What is your mother's maiden name?");
             comboBox1.Items.Add("What was your first pet's name?");
-            comboBox1.Items.Add("What is the name of your favorite teacher?");
-            comboBox1.Items.Add("What was the name of your first school?");
             comboBox1.Items.Add("What is your favorite book?");
 
             comboBox1.SelectedIndex = 0; // Set default selected item

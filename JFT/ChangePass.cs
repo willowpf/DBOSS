@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using BCrypt.Net;
 using System.Security.Cryptography;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace JFT
 {
@@ -16,19 +15,18 @@ namespace JFT
         private DateTime otpGeneratedTime;
         private string storedHashedAnswer;
         private string retrievedUsername;
+        private bool isUserVerified = false; // Track user verification
 
         public ChangePass()
         {
             InitializeComponent();
-            comboBox1.Items.AddRange(new string[]
-            {
-                "What is your mother's maiden name?",
-                "What was your first pet's name?",
-                "What is the name of your favorite teacher?",
-                "What was the name of your first school?",
-                "What is your favorite book?"
-            });
-            comboBox1.SelectedIndex = 0;
+
+            // Hide password fields and reset button initially
+            textBoxNewPassword.Visible = false;
+            textBoxConfirmPassword.Visible = false;
+            btnResetPassword.Visible = false;
+            btnSendOTP.Visible = false;
+            labelSecurityQuestion.Visible = false;
         }
 
         private void btnVerifySecurityQuestion_Click(object sender, EventArgs e)
@@ -49,21 +47,29 @@ namespace JFT
                     {
                         if (reader.Read())
                         {
-                            string storedQuestion = reader["security_question"].ToString();
-                            storedHashedAnswer = reader["security_answer"].ToString();
-
-                            // Display the security question to the user
-                            labelSecurityQuestion.Text = storedQuestion;
-                            labelSecurityQuestion.Visible = true;
-
-                            if (BCrypt.Net.BCrypt.Verify(securityAnswer, storedHashedAnswer))
+                            if (!isUserVerified)
                             {
-                                MessageBox.Show("User verified.");
-                                GenerateOTP();
+                                // First press: Show security question
+                                retrievedUsername = username;
+                                labelSecurityQuestion.Text = reader["security_question"].ToString();
+                                storedHashedAnswer = reader["security_answer"].ToString();
+                                labelSecurityQuestion.Visible = true;
+                                MessageBox.Show("User exists. Please answer the security question.");
+                                isUserVerified = true;
                             }
                             else
                             {
-                                MessageBox.Show("Incorrect security answer.");
+                                // Second press: Verify answer and generate OTP
+                                if (BCrypt.Net.BCrypt.Verify(securityAnswer, storedHashedAnswer))
+                                {
+                                    MessageBox.Show("Security answer correct! Generating OTP...");
+                                    GenerateOTP();
+                                    btnSendOTP.Visible = true;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Incorrect security answer.");
+                                }
                             }
                         }
                         else
@@ -74,7 +80,6 @@ namespace JFT
                 }
             }
         }
-
 
         private void GenerateOTP()
         {
@@ -91,7 +96,11 @@ namespace JFT
             if (enteredOTP == generatedOTP && (DateTime.Now - otpGeneratedTime).TotalMinutes <= 2)
             {
                 MessageBox.Show("OTP verified. You may now reset your password.");
-                btnSendOTP.Visible = true;
+
+                // Show password fields and reset button
+                textBoxNewPassword.Visible = true;
+                textBoxConfirmPassword.Visible = true;
+                btnResetPassword.Visible = true;
             }
             else
             {
