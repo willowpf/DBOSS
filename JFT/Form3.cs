@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using BCrypt.Net;
@@ -21,28 +14,29 @@ namespace JFT
         public Form3()
         {
             InitializeComponent();
-            this.textBox2.PasswordChar = '*'; //Password textvox
-            this.textBox3.PasswordChar = '*'; // Confirm password textbox
-            this.textBox4.PasswordChar = '*'; //Answer of sec. question
+            textBox2.PasswordChar = '*'; // Password textbox
+            textBox3.PasswordChar = '*'; // Confirm password textbox
+            textBox4.PasswordChar = '*'; // Security answer textbox
 
             // Populate the ComboBox with security questions
             comboBox1.Items.Add("What was your first pet's name?");
             comboBox1.Items.Add("What is your favorite book?");
-
-            comboBox1.SelectedIndex = 0; // Set default selected item
+            comboBox1.SelectedIndex = 0; // Default selection
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string username = textBox1.Text;
+            string username = textBox1.Text.Trim();
             string password = textBox2.Text;
-            string confirmPassword = textBox3.Text; // Confirm password input
-            string securityQuestion = comboBox1.SelectedItem?.ToString(); // Get selected security question
-            string securityAnswer = textBox4.Text; // Get security answer input
+            string confirmPassword = textBox3.Text;
+            string securityQuestion = comboBox1.SelectedItem?.ToString();
+            string securityAnswer = textBox4.Text.Trim();
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(securityQuestion) || string.IsNullOrEmpty(securityAnswer))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) ||
+                string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(securityQuestion) ||
+                string.IsNullOrEmpty(securityAnswer))
             {
-                MessageBox.Show("Please fill in all fields, including security question and answer.");
+                MessageBox.Show("Please fill in all fields.");
                 return;
             }
 
@@ -52,17 +46,17 @@ namespace JFT
                 return;
             }
 
-            string passwordPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{14,}$";
+            
+            string passwordPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{14,}$";
+
             if (!Regex.IsMatch(password, passwordPattern))
             {
-                MessageBox.Show("Password must be at least 14 characters long, include upper and lower case letters, numbers, and special characters.");
+                MessageBox.Show("Password must be at least 14 characters long, include uppercase, lowercase, numbers, and special characters.");
                 return;
             }
 
-            string salt = BCrypt.Net.BCrypt.GenerateSalt();
-            string saltedPassword = password + salt;
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(saltedPassword);
-            string hashedSecurityAnswer = BCrypt.Net.BCrypt.HashPassword(securityAnswer);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password); // Hash without extra salt
+            string hashedSecurityAnswer = BCrypt.Net.BCrypt.HashPassword(securityAnswer.ToLower()); 
 
             try
             {
@@ -70,6 +64,7 @@ namespace JFT
                 {
                     conn.Open();
 
+                    // Check if username already exists
                     string checkQuery = "SELECT COUNT(*) FROM accs WHERE username = @username";
                     using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
                     {
@@ -83,14 +78,15 @@ namespace JFT
                         }
                     }
 
-                    string query = "INSERT INTO accs (username, password, salt, security_question, security_answer) VALUES (@username, @password, @salt, @securityQuestion, @securityAnswer)";
+                    // Insert user into the database
+                    string query = "INSERT INTO accs (username, password, security_question, security_answer) VALUES (@username, @password, @securityQuestion, @securityAnswer)";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@password", hashedPassword);
-                        cmd.Parameters.AddWithValue("@salt", salt);
                         cmd.Parameters.AddWithValue("@securityQuestion", securityQuestion);
                         cmd.Parameters.AddWithValue("@securityAnswer", hashedSecurityAnswer);
+                        
 
                         int result = cmd.ExecuteNonQuery();
 
@@ -98,7 +94,6 @@ namespace JFT
                         {
                             MessageBox.Show("Signup Successful!");
                             this.Close();
-                            
                         }
                         else
                         {

@@ -119,7 +119,8 @@ namespace JFT
                 return;
             }
 
-            string passwordPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{14,}$";
+            string passwordPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{14,}$";
+
             if (!Regex.IsMatch(newPassword, passwordPattern))
             {
                 MessageBox.Show("Password must meet security requirements.");

@@ -21,10 +21,9 @@ namespace JFT
             InitializeComponent();
             this.textBox2.PasswordChar = '*';
         }
-
+        public static string LoggedInUsername;
         private void button1_Click(object sender, EventArgs e)
         {
-            // Retrieve input from text boxes
             string username = textBox1.Text;
             string password = textBox2.Text;
 
@@ -39,8 +38,6 @@ namespace JFT
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
                     conn.Open();
-
-                    // Check if the username exists and retrieve the hashed password and salt
                     string query = "SELECT password, salt FROM accs WHERE username = @username";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
@@ -53,18 +50,14 @@ namespace JFT
                                 string storedSalt = reader["salt"].ToString();
                                 string saltedEnteredPassword = password + storedSalt;
 
-                                // Verify the entered password against the stored hashed password
                                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(saltedEnteredPassword, storedHashedPassword);
 
                                 if (isPasswordValid)
                                 {
                                     MessageBox.Show("Login Successful!");
-
-                                    
                                     MainMenu mainMenu = new MainMenu();
                                     mainMenu.ShowDialog();
-                                    this.Hide();
-                                    // MAIN APP HERE
+                                    this.Close();
                                 }
                                 else
                                 {
@@ -83,6 +76,13 @@ namespace JFT
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+        }
+
+        
+        private void btnForgotPassword_Click(object sender, EventArgs e)
+        {
+            ChangePass changePassForm = new ChangePass();
+            changePassForm.ShowDialog();
         }
     }
 }
