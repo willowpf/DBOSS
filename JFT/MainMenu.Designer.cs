@@ -89,7 +89,7 @@
             this.dataGridViewProducts.Name = "dataGridViewProducts";
             this.dataGridViewProducts.RowHeadersWidth = 51;
             this.dataGridViewProducts.RowTemplate.Height = 24;
-            this.dataGridViewProducts.Size = new System.Drawing.Size(1023, 243);
+            this.dataGridViewProducts.Size = new System.Drawing.Size(696, 243);
             this.dataGridViewProducts.TabIndex = 2;
             this.dataGridViewProducts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewProducts_CellClick);
             this.dataGridViewProducts.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewProducts_CellClick);
@@ -290,7 +290,7 @@
             this.label7.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.label7.Location = new System.Drawing.Point(1099, 42);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(232, 45);
+            this.label7.Size = new System.Drawing.Size(227, 45);
             this.label7.TabIndex = 21;
             this.label7.Text = "The Design";
             // 
@@ -298,7 +298,7 @@
             // 
             this.btnClearFields.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnClearFields.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnClearFields.Location = new System.Drawing.Point(510, 251);
+            this.btnClearFields.Location = new System.Drawing.Point(959, 494);
             this.btnClearFields.Name = "btnClearFields";
             this.btnClearFields.Size = new System.Drawing.Size(114, 62);
             this.btnClearFields.TabIndex = 22;

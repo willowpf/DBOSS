@@ -24,7 +24,7 @@ namespace JFT
         public static string LoggedInUsername;
         private void button1_Click(object sender, EventArgs e)
         {
-            string username = textBox1.Text;
+            string username = textBox1.Text.Trim();
             string password = textBox2.Text;
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -33,6 +33,17 @@ namespace JFT
                 return;
             }
 
+            
+            if (username == "admin1" && password == "admin123")
+            {
+                MessageBox.Show("Admin login successful!");
+                MainMenu adminPage = new MainMenu(); // Admin page
+                adminPage.ShowDialog();
+                this.Close();
+                return;
+            }
+
+            
             try
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -54,9 +65,9 @@ namespace JFT
 
                                 if (isPasswordValid)
                                 {
-                                    MessageBox.Show("Login Successful!");
-                                    MainMenu mainMenu = new MainMenu();
-                                    mainMenu.ShowDialog();
+                                    MessageBox.Show("User login successful!");
+                                    Form userPage = new UserPage(); 
+                                    userPage.ShowDialog();
                                     this.Close();
                                 }
                                 else
@@ -78,7 +89,8 @@ namespace JFT
             }
         }
 
-        
+
+
         private void btnForgotPassword_Click(object sender, EventArgs e)
         {
             ChangePass changePassForm = new ChangePass();
