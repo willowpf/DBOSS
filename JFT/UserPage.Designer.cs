@@ -46,6 +46,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.btn_Report = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProduct)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericQuantity)).BeginInit();
@@ -220,11 +221,23 @@
             this.label7.TabIndex = 17;
             this.label7.Text = "Price";
             // 
+            // btn_Report
+            // 
+            this.btn_Report.BackColor = System.Drawing.Color.Red;
+            this.btn_Report.Location = new System.Drawing.Point(12, 6);
+            this.btn_Report.Name = "btn_Report";
+            this.btn_Report.Size = new System.Drawing.Size(129, 66);
+            this.btn_Report.TabIndex = 18;
+            this.btn_Report.Text = "Report a Problem";
+            this.btn_Report.UseVisualStyleBackColor = false;
+            this.btn_Report.Click += new System.EventHandler(this.btn_Report_Click);
+            // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1404, 623);
+            this.Controls.Add(this.btn_Report);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -244,7 +257,7 @@
             this.Controls.Add(this.dataGridViewProducts);
             this.Controls.Add(this.btnOrder);
             this.Name = "UserPage";
-            this.Text = "UserPage";
+            this.Text = "User Page";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProduct)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericQuantity)).EndInit();
@@ -274,5 +287,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btn_Report;
     }
 }

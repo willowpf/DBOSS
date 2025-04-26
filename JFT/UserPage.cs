@@ -156,5 +156,11 @@ namespace JFT
             MessageBox.Show(receipt, "Checkout Summary");
             orderTable.Clear(); // clear order after checkout
         }
+
+        private void btn_Report_Click(object sender, EventArgs e)
+        {
+            ReportForm reports = new ReportForm();
+            reports.ShowDialog();
+        }
     }
 }
