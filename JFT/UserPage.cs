@@ -138,24 +138,47 @@ namespace JFT
             int totalQuantity = 0;
             decimal totalPrice = 0;
 
-            foreach (DataRow row in orderTable.Rows)
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
-                totalQuantity += Convert.ToInt32(row["Quantity"]);
-                totalPrice += Convert.ToDecimal(row["Total"]);
-            }
+                conn.Open();
+                using (MySqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (DataRow row in orderTable.Rows)
+                        {
+                            int productId = Convert.ToInt32(row["ProductID"]);
+                            int quantity = Convert.ToInt32(row["Quantity"]);
+                            decimal price = Convert.ToDecimal(row["Price"]);
 
-            string receipt = $"--- Receipt ---\n";
-            foreach (DataRow row in orderTable.Rows)
-            {
-                receipt += $"{row["ProductName"]} x {row["Quantity"]} = ₱{row["Total"]}\n";
-            }
-            receipt += $"-----------------------\n";
-            receipt += $"Total Quantity: {totalQuantity}\n";
-            receipt += $"Total Price: ₱{totalPrice}";
+                            string insertQuery = @"INSERT INTO orders (username, product_id, quantity, price) 
+                                           VALUES (@username, @product_id, @quantity, @price)";
+                            using (MySqlCommand cmd = new MySqlCommand(insertQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@username", Form2.LoggedInUsername);
+                                cmd.Parameters.AddWithValue("@product_id", productId);
+                                cmd.Parameters.AddWithValue("@quantity", quantity);
+                                cmd.Parameters.AddWithValue("@price", price);
+                                cmd.ExecuteNonQuery();
+                            }
 
-            MessageBox.Show(receipt, "Checkout Summary");
-            orderTable.Clear(); // clear order after checkout
+                            totalQuantity += quantity;
+                            totalPrice += price * quantity;
+                        }
+
+                        transaction.Commit();
+                        MessageBox.Show($"Checkout complete!\nTotal Items: {totalQuantity}\nTotal Price: ₱{totalPrice}", "Success");
+                        orderTable.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        MessageBox.Show("Checkout failed: " + ex.Message);
+                    }
+                }
+            }
         }
+
 
         private void btn_Report_Click(object sender, EventArgs e)
         {

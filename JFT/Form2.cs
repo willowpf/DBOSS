@@ -33,7 +33,7 @@ namespace JFT
                 return;
             }
 
-            
+                
             if (username == "admin1" && password == "admin123")
             {
                 MessageBox.Show("Admin login successful!");
@@ -69,6 +69,8 @@ namespace JFT
                                     Form userPage = new UserPage(); 
                                     userPage.ShowDialog();
                                     this.Close();
+                                    Form2.LoggedInUsername = username; 
+
                                 }
                                 else
                                 {
