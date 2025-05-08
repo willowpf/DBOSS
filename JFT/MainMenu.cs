@@ -271,6 +271,10 @@ namespace JFT
             changePass.ShowDialog();
         }
 
-       
+        private void btnSee_Transac_Click(object sender, EventArgs e)
+        {
+            Transact transact = new Transact();
+            transact.ShowDialog();
+        }
     }
 }
